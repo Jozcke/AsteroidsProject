@@ -21,5 +21,7 @@ public:
 	void clear(const sf::Color& color = sf::Color::Black);
 	void display();
 	void close();
+	sf::RenderWindow& getWindow();
+	const sf::RenderWindow& getWindow() const;
 };
 

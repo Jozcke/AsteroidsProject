@@ -2,7 +2,7 @@
 
 #include <SFML/graphics.hpp>
 #include "Renderwindow.h"
-
+#include "Player.h"
 
 
 class Gamehandler
@@ -20,4 +20,6 @@ public:
 	
 
 	void runGame();
+	//void drawentity();
+	//void update();
 };

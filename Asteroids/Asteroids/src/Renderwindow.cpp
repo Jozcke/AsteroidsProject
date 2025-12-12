@@ -37,3 +37,12 @@ void Renderwindow::close()
 {
 	this->window.close();
 }
+sf::RenderWindow& Renderwindow::getWindow()
+{
+	return this->window;
+}
+
+const sf::RenderWindow& Renderwindow::getWindow() const
+{
+	return this->window;
+}
