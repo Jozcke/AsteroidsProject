@@ -22,5 +22,8 @@ public:
     void draw(sf::RenderWindow& window) override;
     sf::Angle getRotation() const;
     void WrapAroundScreen(const sf::RenderWindow& window);
+    void moveShip(float dt, sf::Vector2f velocity);
+    sf::Vector2f shipForwardRotation();
+    sf::Vector2f getPosition() const;
 };
 

@@ -130,6 +130,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Bullet.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Livingentity.cpp" />
     <ClCompile Include="src\Entity.cpp" />
@@ -138,6 +139,7 @@
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Bullet.h" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\Livingentity.h" />
     <ClInclude Include="src\Entity.h" />

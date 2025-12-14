@@ -3,12 +3,15 @@
 #include <SFML/graphics.hpp>
 #include "Renderwindow.h"
 #include "Player.h"
-
+#include "Bullet.h"
+#include <vector>
 
 class Gamehandler
 {
 private:
 	Renderwindow window;
+	Player player;
+	std::vector<Bullet> v_bullets;
 
 
 
@@ -20,6 +23,6 @@ public:
 	
 
 	void runGame();
-	//void drawentity();
-	//void update();
+	void drawEntity();
+	void update(float dt);
 };

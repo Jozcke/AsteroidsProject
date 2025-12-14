@@ -14,8 +14,6 @@ Gamehandler::~Gamehandler()
 
 void Gamehandler::runGame()
 {
-	
-	Player player;
 	sf::Clock clock;
 	
 	while (window.isOpen())
@@ -29,18 +27,31 @@ void Gamehandler::runGame()
 		}
 		//eventloop
 		float dt = clock.restart().asSeconds();
-		player.update(dt,window.getWindow());
 		
+		//updates position
+		update(dt);
 		
-		
-
-		window.clear();
 		///Draw objects here
-		player.draw(window.getWindow());
-		window.display();
-
+		drawEntity();
 		
 
 	}
 
+}
+
+
+void Gamehandler::update(float dt)
+{
+	player.update(dt, window.getWindow());
+}
+
+void Gamehandler::drawEntity()
+{
+	
+	window.clear(); // clear screen before drawing next frame
+	//draw entities
+	player.draw(window.getWindow());
+	
+	//display drawn entities. 
+	window.display();
 }

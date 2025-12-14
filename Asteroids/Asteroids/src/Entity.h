@@ -3,7 +3,8 @@
 
 class Entity
 {
-private:
+protected:
+	bool isAlive = false;
 
 public:
 	virtual ~Entity() = default;

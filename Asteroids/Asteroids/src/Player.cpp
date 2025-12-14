@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <math.h>
 
-Player::Player()
+Player::Player() : Livingentity()
 {
 	ship.setPointCount(3);
 	ship.setPoint(0, { 0.0f,-10.0f });
@@ -10,7 +10,8 @@ Player::Player()
 	ship.setPoint(2, { -10.0f,10.0f });
 	ship.setFillColor(sf::Color::White);
 	speed = 0.f;
-	// Automatically compute geometric center (centroid)
+	
+	//compute geometric center
 	sf::Vector2f centroid(0.f, 0.f);
 	for (size_t i = 0; i < ship.getPointCount(); ++i)
 		centroid += ship.getPoint(i);
@@ -19,6 +20,7 @@ Player::Player()
 	ship.setOrigin(centroid); // origin = geometric center
 	
 	ship.setPosition({ 400.f, 300.f });
+	isAlive = true;
 }
 
 void Player::update(float dt, const sf::RenderWindow& window)
@@ -36,7 +38,7 @@ void Player::update(float dt, const sf::RenderWindow& window)
 		accelerate(dt);
 	}
 	
-	ship.move(velocity * dt);
+	moveShip(dt, velocity);
 	maxVelocity();
 	WrapAroundScreen(window);
 }
@@ -62,15 +64,26 @@ void Player::rotateRight(float dt)
 	this->ship.rotate(sf::degrees(rotationSpeed * dt));
 }
 
-void Player::accelerate(float dt)
+void Player::moveShip(float dt, sf::Vector2f velocity)
+{
+	this->ship.move(dt * velocity);
+}
+
+sf::Vector2f Player::shipForwardRotation()
 {
 	//get ship front direction
-	sf::Angle angle = this->ship.getRotation();
-	float rad = angle.asRadians();
-	sf::Vector2f direction(std::sin(rad), -std::cos(rad));
+	float rad = this->ship.getRotation().asRadians();
+	return {std::sin(rad), -std::cos(rad)};
 	
-	//increase velocity
-	velocity += direction * acceleration * dt;
+}
+sf::Vector2f Player::getPosition() const
+{
+	return this->ship.getPosition();
+}
+
+void Player::accelerate(float dt)
+{
+	velocity += shipForwardRotation() * acceleration * dt;
 }
 
 void Player::WrapAroundScreen(const sf::RenderWindow& window)
