@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "Bullet.h"
 #include <iostream>
+#include <algorithm>
 
 Gamehandler::Gamehandler()
 	: window()
@@ -32,12 +33,9 @@ void Gamehandler::runGame()
 		
 		//updates position
 		update(dt);
-		playerShooting();
 		
-		for (auto& bullet : v_bullets)
-		{
-			bullet.update(dt, window.getWindow());
-		}
+		playerShooting(dt);
+		
 		///Draw objects here
 		drawEntity();
 		
@@ -50,12 +48,7 @@ void Gamehandler::runGame()
 void Gamehandler::update(float dt)
 {
 	player.update(dt, window.getWindow());
-	 
-	v_bullets.erase(
-	std::remove_if(v_bullets.begin(), v_bullets.end(),
-	[](const Bullet& b) { return !b.isAlive(); }),
-	v_bullets.end());
-	std::cout << "delete bullet" << std::endl;
+	deleteBullet(v_bullets, dt, window.getWindow());
 }
 
 void Gamehandler::drawEntity()
@@ -72,16 +65,31 @@ void Gamehandler::drawEntity()
 	window.display();
 }
 
-
-
-void Gamehandler::playerShooting()
+void Gamehandler::playerShooting(float dt)
 {
-	if (player.Shoot())
+	fireCooldown -= dt;
+	
+	if (player.Shoot() && fireCooldown <= 0.f)
 	{
 		sf::Vector2f direction = player.shipForwardRotation();
 		v_bullets.emplace_back(player.getPosition() + direction * 12.f, direction);
+		fireCooldown = fireRate;
 		std::cout << "Create bullet" << std::endl;
 	}
+}
 
+void Gamehandler::deleteBullet(std::vector<Bullet>& v_bullets, float dt,const sf::RenderWindow& window)
+{
+	for (auto& bullet : v_bullets)
+	{
+		bullet.update(dt, window);
+	}
 
+	v_bullets.erase(
+		std::remove_if(v_bullets.begin(), v_bullets.end(),
+			[](const Bullet& b) {
+				if (!b.isAlive())
+					std::cout << "Bullet deleted" << std::endl;
+					return !b.getAlive();
+			}), v_bullets.end());
 }

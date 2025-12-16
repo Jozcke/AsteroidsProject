@@ -12,6 +12,8 @@ private:
 	Renderwindow window;
 	Player player;
 	std::vector<Bullet> v_bullets;
+	float fireCooldown = 0.f;
+	const float fireRate = 0.25f;
 
 
 
@@ -26,5 +28,6 @@ public:
 	void drawEntity();
 	void update(float dt);
 
-	void playerShooting();
+	void playerShooting(float dt);
+	void deleteBullet(std::vector<Bullet>& v_bullets, float dt, const sf::RenderWindow& window);
 };
