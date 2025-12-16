@@ -25,4 +25,6 @@ public:
 	void runGame();
 	void drawEntity();
 	void update(float dt);
+
+	void playerShooting();
 };

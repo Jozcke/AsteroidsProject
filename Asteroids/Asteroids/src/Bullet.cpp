@@ -3,16 +3,16 @@
 #include "Bullet.h"
 #include "Player.h"
 
-Bullet::Bullet(sf::Vector2f& startPosition, const sf::Vector2f& direction) : Entity()
+Bullet::Bullet(const sf::Vector2f& startPosition, const sf::Vector2f& direction) : Entity()
 {
 	shapeBullet.setRadius(2);
 	shapeBullet.setFillColor(sf::Color::White);
 	shapeBullet.setOrigin({ 2.f,2.f });
 	
-	position = startPosition;
+	Entity::position = startPosition;
 	velocity = direction * BULLETSPEED;
 
-	isAlive = true;
+	alive = true;
 }
 
 Bullet::~Bullet()
@@ -21,13 +21,17 @@ Bullet::~Bullet()
 
 void Bullet::update(float dt, const sf::RenderWindow& window)
 {
+	
 	position += velocity * dt;  //<-- mathematical update of position.
+	
 	shapeBullet.setPosition(position); //<--- render logic for SFML.
 
-	LifeTime -= dt;
-	if (LifeTime <= 0.f)
+	sf::Vector2u windowSize = window.getSize();
+	const float OutOfView = 100.f;
+	if (position.x < -OutOfView || position.x > windowSize.x + OutOfView ||
+		position.y < -OutOfView || position.y > windowSize.y + OutOfView)
 	{
-		isAlive = false;
+		alive = false;  // mark for removal
 	}
 }
 
@@ -36,7 +40,7 @@ void Bullet::draw(sf::RenderWindow& window)
 	window.draw(this->shapeBullet);
 }
 
-void Bullet::shoot(sf::Vector2f& position)
+bool Bullet::getAlive() const
 {
-
+	return this->alive;
 }

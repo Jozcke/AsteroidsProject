@@ -20,10 +20,11 @@ public:
     Player();
     void update(float dt, const sf::RenderWindow& window) override;
     void draw(sf::RenderWindow& window) override;
-    sf::Angle getRotation() const;
-    void WrapAroundScreen(const sf::RenderWindow& window);
-    void moveShip(float dt, sf::Vector2f velocity);
+    void moveShip(float dt);
+    bool Shoot() const;
+    
     sf::Vector2f shipForwardRotation();
     sf::Vector2f getPosition() const;
+    sf::Angle getRotation() const;
 };
 

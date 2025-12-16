@@ -20,7 +20,8 @@ Player::Player() : Livingentity()
 	ship.setOrigin(centroid); // origin = geometric center
 	
 	ship.setPosition({ 400.f, 300.f });
-	isAlive = true;
+	position = ship.getPosition();
+	alive = true;
 }
 
 void Player::update(float dt, const sf::RenderWindow& window)
@@ -37,10 +38,11 @@ void Player::update(float dt, const sf::RenderWindow& window)
 	{
 		accelerate(dt);
 	}
-	
-	moveShip(dt, velocity);
+
+	moveShip(dt);
 	maxVelocity();
-	WrapAroundScreen(window);
+	Entity::wrapAroundScreen(window);
+	ship.setPosition(position);
 }
 
 void Player::draw(sf::RenderWindow& window)
@@ -64,10 +66,18 @@ void Player::rotateRight(float dt)
 	this->ship.rotate(sf::degrees(rotationSpeed * dt));
 }
 
-void Player::moveShip(float dt, sf::Vector2f velocity)
+void Player::moveShip(float dt)
 {
-	this->ship.move(dt * velocity);
+	this->position += velocity * dt;
 }
+
+bool Player::Shoot() const
+{
+	return sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space);
+}
+
+//
+
 
 sf::Vector2f Player::shipForwardRotation()
 {
@@ -78,30 +88,12 @@ sf::Vector2f Player::shipForwardRotation()
 }
 sf::Vector2f Player::getPosition() const
 {
-	return this->ship.getPosition();
+	return this->position;
 }
 
 void Player::accelerate(float dt)
 {
 	velocity += shipForwardRotation() * acceleration * dt;
-}
-
-void Player::WrapAroundScreen(const sf::RenderWindow& window)
-{
-	sf::Vector2f pos = ship.getPosition();
-	sf::Vector2u size = window.getSize();
-
-	if (pos.x < 0.f)
-		pos.x = static_cast<float>(size.x);
-	else if (pos.x > size.x)
-		pos.x = 0.f;
-
-	if (pos.y < 0.f)
-		pos.y = static_cast<float>(size.y);
-	else if (pos.y > size.y)
-		pos.y = 0.f;
-
-	ship.setPosition(pos);
 }
 
 void Player::maxVelocity()
