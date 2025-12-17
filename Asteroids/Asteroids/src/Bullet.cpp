@@ -12,6 +12,7 @@ Bullet::Bullet(const sf::Vector2f& startPosition, const sf::Vector2f& direction)
 	Entity::position = startPosition;
 	velocity = direction * BULLETSPEED;
 
+	shapeBullet.setPosition(position);
 	alive = true;
 }
 

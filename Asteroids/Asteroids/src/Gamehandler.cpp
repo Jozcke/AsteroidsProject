@@ -3,6 +3,7 @@
 #include "Renderwindow.h"
 #include "Player.h"
 #include "Bullet.h"
+#include "Asteroid.h"
 #include <iostream>
 #include <algorithm>
 
@@ -48,7 +49,17 @@ void Gamehandler::runGame()
 void Gamehandler::update(float dt)
 {
 	player.update(dt, window.getWindow());
-	deleteBullet(v_bullets, dt, window.getWindow());
+
+	for (auto& asteroid : v_asteroid)
+	{
+		asteroid.update(dt, window.getWindow());
+	}
+	for (auto& bullet : v_bullets)
+	{
+		bullet.update(dt, window.getWindow());
+	}
+	deleteBullet();
+
 }
 
 void Gamehandler::drawEntity()
@@ -60,7 +71,11 @@ void Gamehandler::drawEntity()
 	
 	for (auto& bullet : v_bullets)
 		bullet.draw(window.getWindow());
+
+	for (auto& asteroid : v_asteroid)
+		asteroid.draw(window.getWindow());
 	
+
 	//display drawn entities. 
 	window.display();
 }
@@ -78,18 +93,17 @@ void Gamehandler::playerShooting(float dt)
 	}
 }
 
-void Gamehandler::deleteBullet(std::vector<Bullet>& v_bullets, float dt,const sf::RenderWindow& window)
+void Gamehandler::deleteBullet()
 {
-	for (auto& bullet : v_bullets)
-	{
-		bullet.update(dt, window);
-	}
 
 	v_bullets.erase(
 		std::remove_if(v_bullets.begin(), v_bullets.end(),
 			[](const Bullet& b) {
 				if (!b.isAlive())
+				{
 					std::cout << "Bullet deleted" << std::endl;
-					return !b.getAlive();
+					return true;
+				}
+				return false;
 			}), v_bullets.end());
 }

@@ -31,5 +31,5 @@ public:
 	void update(float dt);
 
 	void playerShooting(float dt);
-	void deleteBullet(std::vector<Bullet>& v_bullets, float dt, const sf::RenderWindow& window);
+	void deleteBullet();
 };
