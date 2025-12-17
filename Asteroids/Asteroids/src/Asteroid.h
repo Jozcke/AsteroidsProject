@@ -16,19 +16,22 @@ private:
 	sf::Vector2f direction;
 	
 	void randomSize();
-	void getShape(float radius);
-	void setRadius(int size);
-	void setSpeed(int size);
+	void setHexagonShape();
+	void setRadius();
+	void setSpeed();
 
 public:
 	Asteroid();
 	~Asteroid();
+	
 	void draw(sf::RenderWindow& window) override;
 	void update(float dt, const sf::RenderWindow& window) override;
+	
 	float getSpeed() const;
-	sf::Vector2f setRandomDirection() const;
+	void setRandomDirection();
 	sf::Vector2f getDirection() const;
-
+	sf::Vector2f getPosition() const;
+	float getRadius() const;
 	
 };
 

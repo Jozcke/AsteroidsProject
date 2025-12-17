@@ -13,6 +13,5 @@ public:
 	virtual void update(float dt, const sf::RenderWindow& window) = 0;
 	void wrapAroundScreen(const sf::RenderWindow& window);
 	bool isAlive() const { return alive; }
-
 };
 

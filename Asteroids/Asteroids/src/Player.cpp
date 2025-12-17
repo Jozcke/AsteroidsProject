@@ -1,6 +1,7 @@
 #include "Player.h"
 #include <SFML/Graphics.hpp>
 #include <math.h>
+#include "Bullet.h"
 
 Player::Player() : Livingentity()
 {
@@ -75,8 +76,7 @@ bool Player::Shoot() const
 {
 	return sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space);
 }
-
-//
+//END MOVEMENT
 
 
 sf::Vector2f Player::shipForwardRotation()

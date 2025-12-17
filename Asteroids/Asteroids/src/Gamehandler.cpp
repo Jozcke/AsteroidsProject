@@ -34,8 +34,8 @@ void Gamehandler::runGame()
 		
 		//updates position
 		update(dt);
-		
 		playerShooting(dt);
+		spawnAsteroid(dt);
 		
 		///Draw objects here
 		drawEntity();
@@ -54,11 +54,20 @@ void Gamehandler::update(float dt)
 	{
 		asteroid.update(dt, window.getWindow());
 	}
+	
 	for (auto& bullet : v_bullets)
 	{
 		bullet.update(dt, window.getWindow());
 	}
+	
 	deleteBullet();
+	deleteAsteroid();
+	
+	if (v_asteroid.empty())
+	{
+		waveActive = false;
+	}
+	spawnAsteroidsWhenEmpty(dt);
 
 }
 
@@ -75,7 +84,6 @@ void Gamehandler::drawEntity()
 	for (auto& asteroid : v_asteroid)
 		asteroid.draw(window.getWindow());
 	
-
 	//display drawn entities. 
 	window.display();
 }
@@ -95,9 +103,7 @@ void Gamehandler::playerShooting(float dt)
 
 void Gamehandler::deleteBullet()
 {
-
-	v_bullets.erase(
-		std::remove_if(v_bullets.begin(), v_bullets.end(),
+	v_bullets.erase(std::remove_if(v_bullets.begin(), v_bullets.end(),
 			[](const Bullet& b) {
 				if (!b.isAlive())
 				{
@@ -106,4 +112,44 @@ void Gamehandler::deleteBullet()
 				}
 				return false;
 			}), v_bullets.end());
+}
+
+void Gamehandler::spawnAsteroid(float dt)
+{
+	spawnCooldown -= dt;
+	
+	if (spawnCooldown <= 0.f)
+	{
+		v_asteroid.push_back(Asteroid());
+		spawnCooldown = spawnTime;
+		std::cout << "asteroid created" << std::endl;
+	}
+}
+
+void Gamehandler::spawnAsteroidsWhenEmpty(float dt)
+{
+	
+	if (v_asteroid.size() < 1 && waveActive != true)
+	{
+		int size = rand() % 5 + 1;
+		for (size_t i = 0; i < size; i++)
+		{
+			v_asteroid.emplace_back(Asteroid());
+		}
+		std::cout << "asteroid created" << std::endl;
+		waveActive = true;
+	}
+}
+
+void Gamehandler::deleteAsteroid()
+{
+	v_asteroid.erase(std::remove_if(v_asteroid.begin(), v_asteroid.end(),
+			[](const Asteroid& a) { 
+				if (!a.isAlive())
+				{
+					std::cout << "Asteroid destroyed" << std::endl;
+					return true;
+				}
+				return false;
+			}), v_asteroid.end());
 }

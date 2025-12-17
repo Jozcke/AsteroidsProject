@@ -45,3 +45,13 @@ bool Bullet::getAlive() const
 {
 	return this->alive;
 }
+
+sf::Vector2f Bullet::getPosition() const
+{
+	return this->shapeBullet.getPosition();
+}
+
+float Bullet::getRadius() const
+{
+	return this->shapeBullet.getRadius();
+}

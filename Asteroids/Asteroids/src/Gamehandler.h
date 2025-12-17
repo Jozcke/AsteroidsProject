@@ -16,6 +16,9 @@ private:
 	std::vector<Asteroid> v_asteroid;
 	float fireCooldown = 0.f;
 	const float fireRate = 0.25f;
+	float spawnCooldown = 0.f;
+	float spawnTime = 6.f;
+	bool waveActive = true;
 
 
 
@@ -32,4 +35,8 @@ public:
 
 	void playerShooting(float dt);
 	void deleteBullet();
+
+	void spawnAsteroid(float dt);
+	void spawnAsteroidsWhenEmpty(float dt);
+	void deleteAsteroid();
 };
