@@ -99,3 +99,8 @@ float Asteroid::getRadius() const
 {
 	return this->radius;
 }
+
+void Asteroid::setAlive(bool alive)
+{
+	this->alive = alive;
+}

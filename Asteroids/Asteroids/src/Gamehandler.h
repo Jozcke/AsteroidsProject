@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Bullet.h"
 #include "Asteroid.h"
+#include "Collisionmanager.h"
 #include <vector>
 
 class Gamehandler
@@ -39,4 +40,6 @@ public:
 	void spawnAsteroid(float dt);
 	void spawnAsteroidsWhenEmpty(float dt);
 	void deleteAsteroid();
+
+	void bulletAsteroidCollision();
 };

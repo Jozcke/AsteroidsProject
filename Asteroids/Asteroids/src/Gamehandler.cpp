@@ -60,6 +60,7 @@ void Gamehandler::update(float dt)
 		bullet.update(dt, window.getWindow());
 	}
 	
+	bulletAsteroidCollision();
 	deleteBullet();
 	deleteAsteroid();
 	
@@ -152,4 +153,20 @@ void Gamehandler::deleteAsteroid()
 				}
 				return false;
 			}), v_asteroid.end());
+}
+
+void Gamehandler::bulletAsteroidCollision()
+{
+	for (auto& bullet : v_bullets)
+	{
+		for (auto& asteroid : v_asteroid)
+		{
+			if (Collisionmanager::circleCollision(bullet.getPosition(), bullet.getRadius(),
+				asteroid.getPosition(), asteroid.getRadius()))
+			{
+				bullet.setAlive(false);
+				asteroid.setAlive(false);
+			}
+		}
+	}
 }

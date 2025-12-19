@@ -10,6 +10,7 @@ private:
     float rotationSpeed = 180.f;
     float acceleration = 300.f;
     float maxSpeed = 500.f;
+    float radius;
 
     
     void rotateLeft(float dt);

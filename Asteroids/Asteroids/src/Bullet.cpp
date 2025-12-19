@@ -45,6 +45,10 @@ bool Bullet::getAlive() const
 {
 	return this->alive;
 }
+void Bullet::setAlive(bool alive)
+{
+	this->alive = alive;
+}
 
 sf::Vector2f Bullet::getPosition() const
 {
