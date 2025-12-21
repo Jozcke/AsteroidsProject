@@ -22,7 +22,8 @@ private:
 	bool waveActive = true;
 
 	sf::Font gameFont;
-	sf::Text textHealth;
+	sf::Text healthText;
+	sf::Text scoreText;
 
 public:
 	Gamehandler();

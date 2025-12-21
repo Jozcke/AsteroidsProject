@@ -9,8 +9,17 @@
 #include <string>
 
 Gamehandler::Gamehandler()
-	: window()
+	: window(), healthText(gameFont), scoreText(gameFont)
 {
+	if (!gameFont.openFromFile("font/ARCADECLASSIC.TTF")) {
+		std::cerr << "Failed to load font!" << std::endl;
+	}
+	
+	healthText.setFont(gameFont);
+	healthText.setCharacterSize(30);
+	healthText.setFillColor(sf::Color::White);
+	healthText.setPosition({ 10.f, 10.f });
+
 
 }
 
@@ -50,7 +59,7 @@ void Gamehandler::runGame()
 
 void Gamehandler::update(float dt)
 {
-	//textHealth.setString("Health " + std::to_string(player.getHealth()));
+	healthText.setString("Health " + std::to_string(player.getHealth()));
 	
 	player.update(dt, window.getWindow());
 
@@ -84,7 +93,7 @@ void Gamehandler::drawEntity()
 	//draw entities
 	player.draw(window.getWindow());
 	
-	//window.getWindow().draw(textHealth);
+	window.getWindow().draw(healthText);
 	
 	for (auto& bullet : v_bullets)
 		bullet.draw(window.getWindow());
