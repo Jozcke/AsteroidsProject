@@ -21,9 +21,8 @@ private:
 	float spawnTime = 6.f;
 	bool waveActive = true;
 
-
-
-
+	sf::Font gameFont;
+	sf::Text textHealth;
 
 public:
 	Gamehandler();
@@ -42,4 +41,5 @@ public:
 	void deleteAsteroid();
 
 	void bulletAsteroidCollision();
+	void AsteroidPlayerCollision();
 };

@@ -11,6 +11,7 @@ Player::Player() : Livingentity()
 	ship.setPoint(2, { -10.0f,10.0f });
 	ship.setFillColor(sf::Color::White);
 	speed = 0.f;
+	health = 3;
 	
 	//compute geometric center
 	sf::Vector2f centroid(0.f, 0.f);
@@ -19,7 +20,8 @@ Player::Player() : Livingentity()
 	centroid /= static_cast<float>(ship.getPointCount());
 
 	ship.setOrigin(centroid); // origin = geometric center
-	
+	this->radius = playerRadius();
+
 	ship.setPosition({ 400.f, 300.f });
 	position = ship.getPosition();
 	alive = true;
@@ -83,12 +85,28 @@ sf::Vector2f Player::shipForwardRotation()
 {
 	//get ship front direction
 	float rad = this->ship.getRotation().asRadians();
+	
 	return {std::sin(rad), -std::cos(rad)};
 	
 }
 sf::Vector2f Player::getPosition() const
 {
 	return this->position;
+}
+
+float Player::getRadius() const
+{
+	return this->radius;
+}
+
+int Player::getHealth() const
+{
+	return this->health;
+}
+
+void Player::takeDamage(int damage)
+{
+	this->health -= damage;
 }
 
 void Player::accelerate(float dt)
@@ -99,6 +117,21 @@ void Player::accelerate(float dt)
 void Player::maxVelocity()
 {
 	float speed = std::sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
+	
 	if (speed > maxSpeed)
 	velocity = (velocity / speed) * maxSpeed;
+}
+
+float Player::playerRadius()
+{
+	float maxDistance = 0.f;
+
+	for (size_t i = 0; i < ship.getPointCount(); i++)
+	{
+		sf::Vector2f point = ship.getPoint(i);
+		float distance = std::sqrt(point.x * point.x + point.y * point.y);
+		maxDistance = std::max(maxDistance, distance);
+	}
+	
+	return maxDistance * 0.75f;
 }

@@ -15,3 +15,13 @@ void Entity::wrapAroundScreen(const sf::RenderWindow& window)
     else if (position.y > size.y)
         position.y = 0.f;
 }
+
+void Entity::setAlive(bool alive)
+{
+    this->alive = alive;
+}
+
+bool Entity::isAlive() const
+{
+    return this->alive;
+}

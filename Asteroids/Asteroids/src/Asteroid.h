@@ -32,6 +32,5 @@ public:
 	sf::Vector2f getDirection() const;
 	sf::Vector2f getPosition() const;
 	float getRadius() const;
-	void setAlive(bool alive);
 };
 

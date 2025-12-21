@@ -17,8 +17,6 @@ public:
 	~Bullet();
 	void update(float dt, const sf::RenderWindow& window) override;
 	void draw(sf::RenderWindow& window) override;
-	bool getAlive() const;
-	void setAlive(bool alive);
 	float getRadius() const;
 	sf::Vector2f getPosition() const;
 };

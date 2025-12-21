@@ -7,6 +7,7 @@ class Livingentity : public Entity
 protected:
 	sf::Vector2f velocity;
 	float speed = 0.f;
+	int health;
 
 public:
 	virtual ~Livingentity() = default;

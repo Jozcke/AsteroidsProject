@@ -6,10 +6,12 @@
 #include "Asteroid.h"
 #include <iostream>
 #include <algorithm>
+#include <string>
 
 Gamehandler::Gamehandler()
 	: window()
 {
+
 }
 
 Gamehandler::~Gamehandler()
@@ -48,6 +50,8 @@ void Gamehandler::runGame()
 
 void Gamehandler::update(float dt)
 {
+	//textHealth.setString("Health " + std::to_string(player.getHealth()));
+	
 	player.update(dt, window.getWindow());
 
 	for (auto& asteroid : v_asteroid)
@@ -61,6 +65,7 @@ void Gamehandler::update(float dt)
 	}
 	
 	bulletAsteroidCollision();
+	AsteroidPlayerCollision();
 	deleteBullet();
 	deleteAsteroid();
 	
@@ -79,11 +84,14 @@ void Gamehandler::drawEntity()
 	//draw entities
 	player.draw(window.getWindow());
 	
+	//window.getWindow().draw(textHealth);
+	
 	for (auto& bullet : v_bullets)
 		bullet.draw(window.getWindow());
 
 	for (auto& asteroid : v_asteroid)
 		asteroid.draw(window.getWindow());
+	
 	
 	//display drawn entities. 
 	window.display();
@@ -161,12 +169,32 @@ void Gamehandler::bulletAsteroidCollision()
 	{
 		for (auto& asteroid : v_asteroid)
 		{
+			if (!asteroid.isAlive()) {continue;}
 			if (Collisionmanager::circleCollision(bullet.getPosition(), bullet.getRadius(),
 				asteroid.getPosition(), asteroid.getRadius()))
 			{
 				bullet.setAlive(false);
 				asteroid.setAlive(false);
+				break;  //fail-safe break incase bullet might register more than 1 collision. 
 			}
+		}
+	}
+}
+
+void Gamehandler::AsteroidPlayerCollision()
+{
+	if (!player.isAlive()) {return;}
+	
+	for (auto& asteroid : v_asteroid)
+	{
+		if (Collisionmanager::circleCollision(player.getPosition(), player.getRadius(),
+			asteroid.getPosition(), asteroid.getRadius()))
+		{
+				player.takeDamage(1);
+				//if (player.getHealth() <= 0) { player.setAlive(false); }
+				std::cout << "player hit by asteroid" << std::endl;
+				asteroid.setAlive(false);
+				break;
 		}
 	}
 }

@@ -18,6 +18,8 @@ private:
     void accelerate(float dt);
     void maxVelocity();
 
+    
+
 public:
     Player();
     void update(float dt, const sf::RenderWindow& window) override;
@@ -28,5 +30,9 @@ public:
     sf::Vector2f shipForwardRotation();
     sf::Vector2f getPosition() const;
     sf::Angle getRotation() const;
+    float getRadius() const;
+    float playerRadius();
+    int getHealth() const;
+    void takeDamage(int damage);
 };
 

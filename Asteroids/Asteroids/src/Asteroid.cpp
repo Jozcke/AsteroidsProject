@@ -16,6 +16,7 @@ Asteroid::Asteroid()
 
 	velocity = getSpeed() * getDirection();
 	alive = true;
+	health = 1;
 
 }
 
@@ -98,9 +99,4 @@ sf::Vector2f Asteroid::getPosition() const
 float Asteroid::getRadius() const
 {
 	return this->radius;
-}
-
-void Asteroid::setAlive(bool alive)
-{
-	this->alive = alive;
 }
