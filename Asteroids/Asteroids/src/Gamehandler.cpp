@@ -14,13 +14,21 @@ Gamehandler::Gamehandler()
 	if (!gameFont.openFromFile("font/ARCADECLASSIC.TTF")) {
 		std::cerr << "Failed to load font!" << std::endl;
 	}
-	
+	sf::Vector2u size = window.getSize();
+
 	healthText.setFont(gameFont);
 	healthText.setCharacterSize(30);
 	healthText.setFillColor(sf::Color::White);
 	healthText.setPosition({ 10.f, 10.f });
 
 
+	scoreText.setFont(gameFont);
+	scoreText.setCharacterSize(30);
+	scoreText.setFillColor(sf::Color::White);
+	
+	sf::FloatRect scoreTextBounds = scoreText.getLocalBounds();
+	scoreText.setOrigin({ scoreTextBounds.size.x, scoreTextBounds.size.y });
+	scoreText.setPosition({ static_cast<float>(window.getSize().x) / 2, 10.f });
 }
 
 Gamehandler::~Gamehandler()
@@ -60,6 +68,7 @@ void Gamehandler::runGame()
 void Gamehandler::update(float dt)
 {
 	healthText.setString("Health " + std::to_string(player.getHealth()));
+	scoreText.setString(std::to_string(getScore()));
 	
 	player.update(dt, window.getWindow());
 
@@ -94,6 +103,7 @@ void Gamehandler::drawEntity()
 	player.draw(window.getWindow());
 	
 	window.getWindow().draw(healthText);
+	window.getWindow().draw(scoreText);
 	
 	for (auto& bullet : v_bullets)
 		bullet.draw(window.getWindow());
@@ -184,6 +194,7 @@ void Gamehandler::bulletAsteroidCollision()
 			{
 				bullet.setAlive(false);
 				asteroid.setAlive(false);
+				addScore();
 				break;  //fail-safe break incase bullet might register more than 1 collision. 
 			}
 		}
@@ -206,4 +217,14 @@ void Gamehandler::AsteroidPlayerCollision()
 				break;
 		}
 	}
+}
+
+int Gamehandler::getScore() const
+{
+	return this->score;
+}
+
+void Gamehandler::addScore()
+{
+	this->score += 10;
 }

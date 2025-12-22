@@ -20,6 +20,7 @@ private:
 	float spawnCooldown = 0.f;
 	float spawnTime = 6.f;
 	bool waveActive = true;
+	int score = 0;
 
 	sf::Font gameFont;
 	sf::Text healthText;
@@ -43,4 +44,7 @@ public:
 
 	void bulletAsteroidCollision();
 	void AsteroidPlayerCollision();
+
+	int getScore() const;
+	void addScore();
 };

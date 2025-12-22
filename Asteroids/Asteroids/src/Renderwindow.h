@@ -23,5 +23,7 @@ public:
 	void close();
 	sf::RenderWindow& getWindow();
 	const sf::RenderWindow& getWindow() const;
+
+	sf::Vector2u getSize() const;
 };
 

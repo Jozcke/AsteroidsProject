@@ -46,3 +46,8 @@ const sf::RenderWindow& Renderwindow::getWindow() const
 {
 	return this->window;
 }
+
+sf::Vector2u Renderwindow::getSize() const
+{
+	return this->window.getSize();
+}

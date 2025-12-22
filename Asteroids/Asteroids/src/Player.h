@@ -11,6 +11,7 @@ private:
     float acceleration = 300.f;
     float maxSpeed = 500.f;
     float radius;
+    int score;
 
     
     void rotateLeft(float dt);

@@ -12,7 +12,7 @@ Player::Player() : Livingentity()
 	ship.setFillColor(sf::Color::White);
 	speed = 0.f;
 	health = 3;
-	
+
 	//compute geometric center
 	sf::Vector2f centroid(0.f, 0.f);
 	for (size_t i = 0; i < ship.getPointCount(); ++i)
