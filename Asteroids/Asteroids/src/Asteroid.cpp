@@ -2,7 +2,7 @@
 #include <random>
 #include "SFML/Graphics.hpp"
 
-Asteroid::Asteroid()
+Asteroid::Asteroid() : Livingentity()
 {
 	randomSize();
 	setRadius();
@@ -89,11 +89,6 @@ void Asteroid::setRandomDirection()
 sf::Vector2f Asteroid::getDirection() const
 {
 	return this->direction;
-}
-
-sf::Vector2f Asteroid::getPosition() const
-{
-	return this->position;
 }
 
 float Asteroid::getRadius() const

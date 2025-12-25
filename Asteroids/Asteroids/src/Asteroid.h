@@ -30,7 +30,6 @@ public:
 	float getSpeed() const;
 	void setRandomDirection();
 	sf::Vector2f getDirection() const;
-	sf::Vector2f getPosition() const;
 	float getRadius() const;
 };
 

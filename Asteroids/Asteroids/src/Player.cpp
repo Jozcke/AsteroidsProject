@@ -135,3 +135,4 @@ float Player::playerRadius()
 	
 	return maxDistance * 0.75f;
 }
+

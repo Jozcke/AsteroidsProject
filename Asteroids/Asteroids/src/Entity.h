@@ -14,5 +14,8 @@ public:
 	void wrapAroundScreen(const sf::RenderWindow& window);
 	bool isAlive() const;
 	void setAlive(bool alive);
+
+	void setPosition(float posX, float posY);
+	sf::Vector2f getPosition() const;
 };
 

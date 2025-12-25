@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "Bullet.h"
 #include "Asteroid.h"
+#include "Collisionmanager.h"
 #include <iostream>
 #include <algorithm>
 #include <string>
@@ -84,6 +85,8 @@ void Gamehandler::update(float dt)
 	
 	bulletAsteroidCollision();
 	AsteroidPlayerCollision();
+	AsteroidAsteroidCollision();
+	
 	deleteBullet();
 	deleteAsteroid();
 	
@@ -145,10 +148,18 @@ void Gamehandler::deleteBullet()
 void Gamehandler::spawnAsteroid(float dt)
 {
 	spawnCooldown -= dt;
-	
+
 	if (spawnCooldown <= 0.f)
 	{
-		v_asteroid.push_back(Asteroid());
+		Asteroid asteroid;
+		sf::Vector2f spawnPos = randomEdgeSpawn(asteroid.getRadius());
+		asteroid.setPosition({ spawnPos.x, spawnPos.y });
+
+		if (validSpawnPosition({spawnPos.x, spawnPos.y}, asteroid.getRadius()))
+		{
+			v_asteroid.push_back(asteroid);
+		}
+
 		spawnCooldown = spawnTime;
 		std::cout << "asteroid created" << std::endl;
 	}
@@ -162,7 +173,15 @@ void Gamehandler::spawnAsteroidsWhenEmpty(float dt)
 		int size = rand() % 5 + 1;
 		for (size_t i = 0; i < size; i++)
 		{
-			v_asteroid.emplace_back(Asteroid());
+			Asteroid asteroid;
+
+			sf::Vector2f spawnPos = randomEdgeSpawn(asteroid.getRadius());
+			asteroid.setPosition({ spawnPos.x, spawnPos.y });
+
+			if (validSpawnPosition({ spawnPos.x, spawnPos.y }, asteroid.getRadius()))
+			{
+				v_asteroid.push_back(asteroid);
+			}
 		}
 		std::cout << "asteroid created" << std::endl;
 		waveActive = true;
@@ -219,6 +238,21 @@ void Gamehandler::AsteroidPlayerCollision()
 	}
 }
 
+void Gamehandler::AsteroidAsteroidCollision()
+{
+	for (size_t i = 0; i < v_asteroid.size(); i++)
+	{
+		for (size_t j = i + 1; j < v_asteroid.size(); j++)
+		{
+			if (Collisionmanager::circleCollision(v_asteroid[i].getPosition(), v_asteroid[i].getRadius(),
+				v_asteroid[j].getPosition(), v_asteroid[j].getRadius()))
+			{
+				Collisionmanager::onCollisionVelocitySwap(v_asteroid[i], v_asteroid[j]);
+			}
+		}
+	}
+}
+
 int Gamehandler::getScore() const
 {
 	return this->score;
@@ -227,4 +261,54 @@ int Gamehandler::getScore() const
 void Gamehandler::addScore()
 {
 	this->score += 10;
+}
+
+sf::Vector2f Gamehandler::randomEdgeSpawn(float radius)
+{
+	sf::Vector2u size = window.getWindow().getSize();
+
+	float x, y;
+
+	switch (rand() % 4) // rand 4 edges. 
+	{
+	case 0: // Top
+		x = static_cast<float>(rand() % size.x);
+		y = radius;
+		break;
+
+	case 1: // Bottom
+		x = static_cast<float>(rand() % size.x);
+		y = size.y - radius;
+		break;
+
+	case 2: // Left
+		x = radius;
+		y = static_cast<float>(rand() % size.y);
+		break;
+
+	default: // Right
+		x = size.x - radius;
+		y = static_cast<float>(rand() % size.y);
+		break;
+	}
+
+	return { x, y };
+}
+
+bool Gamehandler::validSpawnPosition(const sf::Vector2f& pos,float radius)
+{
+	if (Collisionmanager::circleCollision(pos, radius, player.getPosition(), player.getRadius() + 50.f))
+	{
+		return false;
+	}
+
+	for (const auto& asteroid : v_asteroid)
+	{
+		if (Collisionmanager::circleCollision(pos, radius,asteroid.getPosition(), asteroid.getRadius()))
+		{
+			return false;
+		}
+	}
+
+	return true;
 }

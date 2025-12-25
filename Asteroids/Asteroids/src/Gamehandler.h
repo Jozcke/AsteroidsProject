@@ -13,6 +13,7 @@ class Gamehandler
 private:
 	Renderwindow window;
 	Player player;
+	Collisionmanager manager;
 	std::vector<Bullet> v_bullets;
 	std::vector<Asteroid> v_asteroid;
 	float fireCooldown = 0.f;
@@ -40,10 +41,13 @@ public:
 
 	void spawnAsteroid(float dt);
 	void spawnAsteroidsWhenEmpty(float dt);
+	sf::Vector2f randomEdgeSpawn(float radius);
+	bool validSpawnPosition(const sf::Vector2f& pos, float radius);
 	void deleteAsteroid();
 
 	void bulletAsteroidCollision();
 	void AsteroidPlayerCollision();
+	void AsteroidAsteroidCollision();
 
 	int getScore() const;
 	void addScore();

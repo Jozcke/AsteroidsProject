@@ -25,3 +25,13 @@ bool Entity::isAlive() const
 {
     return this->alive;
 }
+
+void Entity::setPosition(float posX, float posY)
+{
+    this->position = { posX , posY };
+}
+
+sf::Vector2f Entity::getPosition() const
+{
+    return this->position;
+}

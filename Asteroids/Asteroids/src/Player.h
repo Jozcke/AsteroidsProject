@@ -35,5 +35,6 @@ public:
     float playerRadius();
     int getHealth() const;
     void takeDamage(int damage);
+    sf::Vector2f getVelocity() const;
 };
 
