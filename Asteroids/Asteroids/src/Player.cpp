@@ -11,7 +11,7 @@ Player::Player() : Livingentity()
 	ship.setPoint(2, { -10.0f,10.0f });
 	ship.setFillColor(sf::Color::White);
 	speed = 0.f;
-	health = 3;
+	health = INITHEALTH;
 
 	//compute geometric center
 	sf::Vector2f centroid(0.f, 0.f);
@@ -89,10 +89,6 @@ sf::Vector2f Player::shipForwardRotation()
 	return {std::sin(rad), -std::cos(rad)};
 	
 }
-sf::Vector2f Player::getPosition() const
-{
-	return this->position;
-}
 
 float Player::getRadius() const
 {
@@ -136,3 +132,12 @@ float Player::playerRadius()
 	return maxDistance * 0.75f;
 }
 
+void Player::reset(const sf::Vector2f& spawnPosition)
+{
+	health = INITHEALTH;
+	alive = true;
+	position = spawnPosition;
+	velocity = { 0.f, 0.f };
+	ship.setPosition(position);
+	ship.setRotation(sf::degrees(0.f));
+}

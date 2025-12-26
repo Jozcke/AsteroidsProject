@@ -51,4 +51,6 @@ public:
 
 	int getScore() const;
 	void addScore();
+
+	void gameReset();
 };

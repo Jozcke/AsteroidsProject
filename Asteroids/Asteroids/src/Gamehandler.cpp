@@ -60,7 +60,10 @@ void Gamehandler::runGame()
 		///Draw objects here
 		drawEntity();
 		
-
+		if (player.getHealth() < 1)
+		{
+			gameReset();
+		}
 	}
 
 }
@@ -311,4 +314,20 @@ bool Gamehandler::validSpawnPosition(const sf::Vector2f& pos,float radius)
 	}
 
 	return true;
+}
+
+void Gamehandler::gameReset()
+{
+	sf::Vector2u winSize = window.getWindow().getSize();
+	sf::Vector2f windowCenter = { winSize.x / 2.f, winSize.y / 2.f };
+
+	player.reset(windowCenter);
+
+	v_asteroid.clear();
+	v_bullets.clear();
+
+	score = 0;
+	spawnCooldown = 0.f;
+	fireCooldown = 0.f;
+	waveActive = false;
 }

@@ -12,14 +12,12 @@ private:
     float maxSpeed = 500.f;
     float radius;
     int score;
-
+    const int INITHEALTH = 3;
     
     void rotateLeft(float dt);
     void rotateRight(float dt);
     void accelerate(float dt);
     void maxVelocity();
-
-    
 
 public:
     Player();
@@ -27,9 +25,9 @@ public:
     void draw(sf::RenderWindow& window) override;
     void moveShip(float dt);
     bool Shoot() const;
+    void reset(const sf::Vector2f& spawnPosition);
     
     sf::Vector2f shipForwardRotation();
-    sf::Vector2f getPosition() const;
     sf::Angle getRotation() const;
     float getRadius() const;
     float playerRadius();
