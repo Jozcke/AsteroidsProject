@@ -30,6 +30,9 @@ Gamehandler::Gamehandler()
 	sf::FloatRect scoreTextBounds = scoreText.getLocalBounds();
 	scoreText.setOrigin({ scoreTextBounds.size.x, scoreTextBounds.size.y });
 	scoreText.setPosition({ static_cast<float>(window.getSize().x) / 2, 10.f });
+
+	v_asteroid.reserve(10);
+	v_bullets.reserve(10);
 }
 
 Gamehandler::~Gamehandler()
