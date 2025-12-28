@@ -11,11 +11,20 @@
 class Gamehandler
 {
 private:
+	enum class GameState
+	{
+		Playing,
+		GameOver,
+		Paused
+	};
+	
 	Renderwindow window;
 	Player player;
 	Collisionmanager manager;
+	GameState gameState;
 	std::vector<Bullet> v_bullets;
 	std::vector<Asteroid> v_asteroid;
+	
 	float fireCooldown = 0.f;
 	const float fireRate = 0.25f;
 	float spawnCooldown = 0.f;
@@ -27,6 +36,8 @@ private:
 	sf::Text healthText;
 	sf::Text scoreText;
 
+	
+
 public:
 	Gamehandler();
 	~Gamehandler();
@@ -34,7 +45,8 @@ public:
 
 	void runGame();
 	void drawEntity();
-	void update(float dt);
+	void updateGame(float dt);
+	void updatePause(float dt);
 
 	void playerShooting(float dt);
 	void deleteBullet();

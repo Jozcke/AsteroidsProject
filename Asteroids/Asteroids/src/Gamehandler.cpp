@@ -10,7 +10,7 @@
 #include <string>
 
 Gamehandler::Gamehandler()
-	: window(), healthText(gameFont), scoreText(gameFont)
+	: window(), healthText(gameFont), scoreText(gameFont), gameState(GameState::Paused)
 {
 	if (!gameFont.openFromFile("font/ARCADECLASSIC.TTF")) {
 		std::cerr << "Failed to load font!" << std::endl;
@@ -33,6 +33,7 @@ Gamehandler::Gamehandler()
 
 	v_asteroid.reserve(10);
 	v_bullets.reserve(10);
+
 }
 
 Gamehandler::~Gamehandler()
@@ -51,17 +52,47 @@ void Gamehandler::runGame()
 			{
 				window.close();
 			}
+
+			if (const auto keyPressed = event->getIf < sf::Event::KeyPressed>())
+			{
+				if (keyPressed->scancode == sf::Keyboard::Scancode::P)
+				{
+					if (gameState == GameState::Paused)
+					{
+						gameState = GameState::Playing;
+						std::cout << "Resume game." << std::endl;
+					}
+					else
+					{
+						gameState = GameState::Paused;
+						std::cout << "Pause game" << std::endl;
+					}
+				}
+			}
 		}
+
 		//eventloop
 		float dt = clock.restart().asSeconds();
 		
 		//updates position
-		update(dt);
-		playerShooting(dt);
-		spawnAsteroid(dt);
+		switch (gameState)
+		{
+		case Gamehandler::GameState::Playing:
+			updateGame(dt);
+			playerShooting(dt);
+			spawnAsteroid(dt);
+			//Draw objects after updates!!
+			drawEntity();
+			break;
 		
-		///Draw objects here
-		drawEntity();
+		case Gamehandler::GameState::GameOver:
+			break;
+		
+		case Gamehandler::GameState::Paused:
+			break;
+		}
+		
+	
 		
 		if (player.getHealth() < 1)
 		{
@@ -72,7 +103,7 @@ void Gamehandler::runGame()
 }
 
 
-void Gamehandler::update(float dt)
+void Gamehandler::updateGame(float dt)
 {
 	healthText.setString("Health " + std::to_string(player.getHealth()));
 	scoreText.setString(std::to_string(getScore()));
@@ -101,6 +132,11 @@ void Gamehandler::update(float dt)
 		waveActive = false;
 	}
 	spawnAsteroidsWhenEmpty(dt);
+
+}
+
+void Gamehandler::updatePause(float dt)
+{
 
 }
 
