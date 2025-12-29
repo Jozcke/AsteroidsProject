@@ -33,10 +33,10 @@ private:
 	int score = 0;
 
 	sf::Font gameFont;
+	
 	sf::Text healthText;
 	sf::Text scoreText;
-
-	
+	sf::Text pauseText;
 
 public:
 	Gamehandler();

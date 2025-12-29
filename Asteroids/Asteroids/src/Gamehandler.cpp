@@ -10,7 +10,7 @@
 #include <string>
 
 Gamehandler::Gamehandler()
-	: window(), healthText(gameFont), scoreText(gameFont), gameState(GameState::Paused)
+	: window(), healthText(gameFont), scoreText(gameFont), pauseText(gameFont), gameState(GameState::Paused)
 {
 	if (!gameFont.openFromFile("font/ARCADECLASSIC.TTF")) {
 		std::cerr << "Failed to load font!" << std::endl;
@@ -26,10 +26,18 @@ Gamehandler::Gamehandler()
 	scoreText.setFont(gameFont);
 	scoreText.setCharacterSize(30);
 	scoreText.setFillColor(sf::Color::White);
-	
 	sf::FloatRect scoreTextBounds = scoreText.getLocalBounds();
 	scoreText.setOrigin({ scoreTextBounds.size.x, scoreTextBounds.size.y });
-	scoreText.setPosition({ static_cast<float>(window.getSize().x) / 2, 10.f });
+	scoreText.setPosition({ static_cast<float>(window.getSize().x) / 2.f , 10.f });
+
+	pauseText.setFont(gameFont);
+	pauseText.setCharacterSize(40);
+	pauseText.setFillColor(sf::Color::White);
+	pauseText.setString("PAUSED");
+	sf::FloatRect pauseTextBounds = pauseText.getLocalBounds();
+	pauseText.setOrigin({ pauseTextBounds.size.x / 2.f, scoreTextBounds.size.y / 2.f});
+	pauseText.setPosition({ static_cast<float>(window.getSize().x / 2.f),
+						static_cast<float>(window.getSize().y - 100) });
 
 	v_asteroid.reserve(10);
 	v_bullets.reserve(10);
@@ -81,8 +89,6 @@ void Gamehandler::runGame()
 			updateGame(dt);
 			playerShooting(dt);
 			spawnAsteroid(dt);
-			//Draw objects after updates!!
-			drawEntity();
 			break;
 		
 		case Gamehandler::GameState::GameOver:
@@ -92,7 +98,7 @@ void Gamehandler::runGame()
 			break;
 		}
 		
-	
+		drawEntity();
 		
 		if (player.getHealth() < 1)
 		{
@@ -142,7 +148,6 @@ void Gamehandler::updatePause(float dt)
 
 void Gamehandler::drawEntity()
 {
-	
 	window.clear(); // clear screen before drawing next frame
 	//draw entities
 	player.draw(window.getWindow());
@@ -156,6 +161,10 @@ void Gamehandler::drawEntity()
 	for (auto& asteroid : v_asteroid)
 		asteroid.draw(window.getWindow());
 	
+	if (gameState == GameState::Paused)
+	{
+		window.getWindow().draw(pauseText);
+	}
 	
 	//display drawn entities. 
 	window.display();
