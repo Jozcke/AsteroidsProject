@@ -130,6 +130,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Scoremanager.cpp" />
     <ClCompile Include="src\Collisionmanager.cpp" />
     <ClCompile Include="src\Asteroid.cpp" />
     <ClCompile Include="src\Bullet.cpp" />
@@ -141,6 +142,7 @@
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Scoremanager.h" />
     <ClInclude Include="src\Collisionmanager.h" />
     <ClInclude Include="src\Asteroid.h" />
     <ClInclude Include="src\Bullet.h" />

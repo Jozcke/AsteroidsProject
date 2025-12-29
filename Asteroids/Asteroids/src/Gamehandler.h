@@ -6,6 +6,7 @@
 #include "Bullet.h"
 #include "Asteroid.h"
 #include "Collisionmanager.h"
+#include "Scoremanager.h"
 #include <vector>
 
 class Gamehandler
@@ -15,13 +16,16 @@ private:
 	{
 		Playing,
 		GameOver,
-		Paused
+		Paused,
 	};
+	sf::Font gameFont;
 	
 	Renderwindow window;
 	Player player;
 	Collisionmanager manager;
 	GameState gameState;
+	Scoremanager scoreManager;
+	
 	std::vector<Bullet> v_bullets;
 	std::vector<Asteroid> v_asteroid;
 	
@@ -32,8 +36,6 @@ private:
 	bool waveActive = true;
 	int score = 0;
 
-	sf::Font gameFont;
-	
 	sf::Text healthText;
 	sf::Text scoreText;
 	sf::Text pauseText;

@@ -5,12 +5,13 @@
 #include "Bullet.h"
 #include "Asteroid.h"
 #include "Collisionmanager.h"
+#include "Scoremanager.h"
 #include <iostream>
 #include <algorithm>
 #include <string>
 
 Gamehandler::Gamehandler()
-	: window(), healthText(gameFont), scoreText(gameFont), pauseText(gameFont), gameState(GameState::Paused)
+	: window(), healthText(gameFont), scoreText(gameFont), pauseText(gameFont), scoreManager(gameFont), gameState(GameState::Paused)
 {
 	if (!gameFont.openFromFile("font/ARCADECLASSIC.TTF")) {
 		std::cerr << "Failed to load font!" << std::endl;
