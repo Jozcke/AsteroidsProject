@@ -32,7 +32,7 @@ Gamehandler::Gamehandler()
 
 	pauseText.setFont(gameFont);
 	pauseText.setCharacterSize(40);
-	pauseText.setFillColor(sf::Color::White);
+	pauseText.setFillColor(sf::Color::Yellow);
 	pauseText.setString("PAUSED");
 	sf::FloatRect pauseTextBounds = pauseText.getLocalBounds();
 	pauseText.setOrigin({ pauseTextBounds.size.x / 2.f, scoreTextBounds.size.y / 2.f});
