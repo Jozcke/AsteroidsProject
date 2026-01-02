@@ -11,7 +11,7 @@
 #include <string>
 
 Gamehandler::Gamehandler()
-	: window(), healthText(gameFont), scoreText(gameFont), pauseText(gameFont), scoreManager(gameFont), gameState(GameState::Paused)
+	: window(), healthText(gameFont), scoreText(gameFont), pauseText(gameFont), gameOverText(gameFont), nameInputText(gameFont), scoreManager(gameFont), gameState(GameState::Paused)
 {
 	if (!gameFont.openFromFile("font/ARCADECLASSIC.TTF")) {
 		std::cerr << "Failed to load font!" << std::endl;
@@ -22,7 +22,6 @@ Gamehandler::Gamehandler()
 	healthText.setCharacterSize(30);
 	healthText.setFillColor(sf::Color::White);
 	healthText.setPosition({ 10.f, 10.f });
-
 
 	scoreText.setFont(gameFont);
 	scoreText.setCharacterSize(30);
@@ -36,10 +35,27 @@ Gamehandler::Gamehandler()
 	pauseText.setFillColor(sf::Color::Yellow);
 	pauseText.setString("PAUSED");
 	sf::FloatRect pauseTextBounds = pauseText.getLocalBounds();
-	pauseText.setOrigin({ pauseTextBounds.size.x / 2.f, scoreTextBounds.size.y / 2.f});
+	pauseText.setOrigin({ pauseTextBounds.size.x / 2.f, pauseTextBounds.size.y / 2.f});
 	pauseText.setPosition({ static_cast<float>(window.getSize().x / 2.f),
 						static_cast<float>(window.getSize().y - 100) });
 
+	gameOverText.setFont(gameFont);
+	gameOverText.setCharacterSize(40);
+	gameOverText.setFillColor(sf::Color::Yellow);
+	gameOverText.setString("GAME OVER");
+	sf::FloatRect gameOverTextBounds = gameOverText.getLocalBounds();
+	gameOverText.setOrigin({ gameOverTextBounds.size.x / 2.f, gameOverTextBounds.size.y / 2.f });
+	gameOverText.setPosition({ static_cast<float>(window.getSize().x / 2.f),
+						static_cast<float>(window.getSize().y - 100) });
+
+	nameInputText.setFont(gameFont);
+	nameInputText.setCharacterSize(30);
+	nameInputText.setFillColor(sf::Color::White);
+
+	sf::RectangleShape overlay;
+	overlay.setSize(sf::Vector2f(window.getWindow().getSize()));
+	overlay.setFillColor(sf::Color(0, 0, 0, 150));
+	
 	v_asteroid.reserve(10);
 	v_bullets.reserve(10);
 
@@ -64,7 +80,7 @@ void Gamehandler::runGame()
 
 			if (const auto keyPressed = event->getIf < sf::Event::KeyPressed>())
 			{
-				if (keyPressed->scancode == sf::Keyboard::Scancode::P)
+				if (keyPressed->scancode == sf::Keyboard::Scancode::P && gameState != GameState::GameOver)
 				{
 					if (gameState == GameState::Paused)
 					{
@@ -76,6 +92,38 @@ void Gamehandler::runGame()
 						gameState = GameState::Paused;
 						std::cout << "Pause game" << std::endl;
 					}
+				}
+			}
+			if (gameState == GameState::GameOver && enterNameCheck)
+			{
+				if (const auto* charInput = event->getIf<sf::Event::TextEntered>())
+				{	
+					if (charInput->unicode == '\b' && !playerName.empty())
+					{
+						playerName.pop_back();
+					}
+					else if (charInput->unicode == '\r' && !playerName.empty())
+					{
+						scoreManager.addScore(playerName, score);
+						scoreManager.saveScore("score/score.txt");
+
+						gameReset();
+						enterNameCheck = false;
+						gameState = GameState::Paused;
+						isGameOver = false;
+					}
+					else if (charInput->unicode < 128)
+					{
+						char c = static_cast<char>(charInput->unicode);
+
+						if (std::isalnum(c))
+						{
+							if(playerName.size() < 10)
+							{
+								playerName += c;
+							}
+						}
+					}				
 				}
 			}
 		}
@@ -101,9 +149,22 @@ void Gamehandler::runGame()
 		
 		drawEntity();
 		
-		if (player.getHealth() < 1)
+		if (player.getHealth() <= 0 && !isGameOver)
 		{
-			gameReset();
+			isGameOver = true;
+			gameState = GameState::GameOver;
+
+			if (scoreManager.checkifTopScore(score))
+			{
+				enterNameCheck = true;
+				playerName.clear();
+			}
+			else
+			{
+				gameReset();
+				gameState = GameState::Paused;
+				isGameOver = false;
+			}
 		}
 	}
 
@@ -153,19 +214,46 @@ void Gamehandler::drawEntity()
 	//draw entities
 	player.draw(window.getWindow());
 	
-	window.getWindow().draw(healthText);
-	window.getWindow().draw(scoreText);
-	
 	for (auto& bullet : v_bullets)
 		bullet.draw(window.getWindow());
 
 	for (auto& asteroid : v_asteroid)
 		asteroid.draw(window.getWindow());
 	
+	window.getWindow().draw(healthText);
+	window.getWindow().draw(scoreText);
+	
+	
 	if (gameState == GameState::Paused)
 	{
+		
+		sf::RectangleShape overlay;
+		overlay.setSize(sf::Vector2f(window.getWindow().getSize()));
+		overlay.setFillColor(sf::Color(0, 0, 0, 150)); // semi-transparent black
+		window.getWindow().draw(overlay);
+
 		window.getWindow().draw(pauseText);
+		scoreManager.draw(window.getWindow());
+		
 	}
+
+	if (gameState == GameState::GameOver)
+	{
+		window.getWindow().draw(gameOverText);
+		scoreManager.draw(window.getWindow());
+		if (enterNameCheck)
+		{
+			nameInputText.setString("Name " + playerName + "_"); // underscore cursor
+			// Center it horizontally
+			sf::FloatRect bounds = nameInputText.getLocalBounds();
+			nameInputText.setOrigin({ bounds.size.x / 2.f, bounds.size.y / 2.f });
+			nameInputText.setPosition({ window.getWindow().getSize().x / 2.f,
+				window.getWindow().getSize().y - 150.f });
+			window.getWindow().draw(nameInputText);
+		}
+	}
+	
+	
 	
 	//display drawn entities. 
 	window.display();
@@ -222,7 +310,7 @@ void Gamehandler::spawnAsteroidsWhenEmpty(float dt)
 	
 	if (v_asteroid.size() < 1 && waveActive != true)
 	{
-		int size = rand() % 5 + 1;
+		int size = rand() % 8 + 3;
 		for (size_t i = 0; i < size; i++)
 		{
 			Asteroid asteroid;

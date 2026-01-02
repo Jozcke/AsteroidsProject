@@ -7,7 +7,7 @@
 
 int main() {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	srand(time(0));
+	srand(static_cast<unsigned int>(time(nullptr)));
 	Gamehandler game;
 	game.runGame();
 }

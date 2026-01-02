@@ -9,7 +9,6 @@ struct Scoreentry {
 		
 	std::string userName;
 	int finalScore;
-
 };
 
 
@@ -21,21 +20,21 @@ private:
 	const std::string filename = "score/score.txt";
 	const sf::Font& gameFont;
 	
-	std::vector<Scoreentry> highScore;
-	std::vector<sf::Text> v_scoreText;
+	std::vector<Scoreentry> v_highScore;
 
 	void sortScore();
 
 public:
 	Scoremanager(const sf::Font& font);
+	
 	void loadScore(const std::string& filename);
 	void saveScore(const std::string& filename) const;
 	void trimScore();
-	void addScore(std::string& name, int score);
-	void draw(sf::RenderWindow& window, sf::Font& gameFont);
+	void addScore(const std::string& name, int score);
+	void draw(sf::RenderWindow& window);
+	bool checkifTopScore(int score) const;
 
 	const std::vector<Scoreentry>& getScore() const;
-
 
 };
 

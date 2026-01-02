@@ -32,13 +32,19 @@ private:
 	float fireCooldown = 0.f;
 	const float fireRate = 0.25f;
 	float spawnCooldown = 0.f;
-	float spawnTime = 6.f;
+	float spawnTime = 4.f;
 	bool waveActive = true;
+	bool isGameOver = false;
 	int score = 0;
 
 	sf::Text healthText;
 	sf::Text scoreText;
 	sf::Text pauseText;
+	sf::Text gameOverText;
+	sf::Text nameInputText;
+
+	std::string playerName;
+	bool enterNameCheck = false;
 
 public:
 	Gamehandler();
