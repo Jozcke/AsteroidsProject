@@ -27,7 +27,7 @@ private:
 	Scoremanager scoreManager;
 	
 	std::vector<Bullet> v_bullets;
-	std::vector<Asteroid> v_asteroid;
+	std::vector<Asteroid*> v_asteroid;
 	
 	float fireCooldown = 0.f;
 	const float fireRate = 0.25f;
