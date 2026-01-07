@@ -9,16 +9,16 @@ class Asteroid : public Livingentity
 {
 private:
 	sf::ConvexShape hexagon;
-	int size;
-	float rotationSpeed = 180.f;
-	float speed;
-	float radius;
 	sf::Vector2f direction;
+	int size;
+	float radius;
+	
 	
 	void randomSize();
 	void setHexagonShape();
 	void setRadius();
-	void setSpeed();
+	void setAsteroidSpeed();
+	void setRandomDirection();
 
 public:
 	Asteroid();
@@ -26,10 +26,11 @@ public:
 	
 	void draw(sf::RenderWindow& window) override;
 	void update(float dt, const sf::RenderWindow& window) override;
-	
-	float getSpeed() const;
-	void setRandomDirection();
+
 	sf::Vector2f getDirection() const;
-	float getRadius() const;
+	float getRadius() const override;
+
+	bool isAlive() const override;
+	void setAlive(bool alive) override;
 };
 

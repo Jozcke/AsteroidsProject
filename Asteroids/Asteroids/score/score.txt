@@ -1,10 +1,10 @@
+testtest 190
+sad 90
 test 80
 Joakim 60
 joakim 60
 bob 30
 Joakiom 20
-Joakim 10
-Joakim 10
 Joakim 10
 Joakim 10
 Joakim 10

@@ -6,7 +6,6 @@ class Player : public Livingentity
 {
 private:
     sf::ConvexShape ship;
-    sf::Vector2f velocity;
     float rotationSpeed = 180.f;
     float acceleration = 300.f;
     float maxSpeed = 500.f;
@@ -33,6 +32,5 @@ public:
     float playerRadius();
     int getHealth() const;
     void takeDamage(int damage);
-    sf::Vector2f getVelocity() const;
 };
 

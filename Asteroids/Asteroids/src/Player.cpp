@@ -10,9 +10,11 @@ Player::Player() : Livingentity()
 	ship.setPoint(1, { 10.0f,10.0f });
 	ship.setPoint(2, { -10.0f,10.0f });
 	ship.setFillColor(sf::Color::White);
-	speed = 0.f;
-	health = INITHEALTH;
-
+	
+	setSpeed(0.f);
+	setHealth(INITHEALTH);
+	setAlive(true);
+	
 	//compute geometric center
 	sf::Vector2f centroid(0.f, 0.f);
 	for (size_t i = 0; i < ship.getPointCount(); ++i)
@@ -21,10 +23,10 @@ Player::Player() : Livingentity()
 
 	ship.setOrigin(centroid); // origin = geometric center
 	this->radius = playerRadius();
-
+	
 	ship.setPosition({ 400.f, 300.f });
-	position = ship.getPosition();
-	alive = true;
+	setPosition(ship.getPosition());
+	
 }
 
 void Player::update(float dt, const sf::RenderWindow& window)
@@ -45,7 +47,7 @@ void Player::update(float dt, const sf::RenderWindow& window)
 	moveShip(dt);
 	maxVelocity();
 	Entity::wrapAroundScreen(window);
-	ship.setPosition(position);
+	ship.setPosition(getPosition());
 }
 
 void Player::draw(sf::RenderWindow& window)
@@ -71,7 +73,7 @@ void Player::rotateRight(float dt)
 
 void Player::moveShip(float dt)
 {
-	this->position += velocity * dt;
+	this->move(dt);
 }
 
 bool Player::Shoot() const
@@ -97,25 +99,28 @@ float Player::getRadius() const
 
 int Player::getHealth() const
 {
-	return this->health;
+	return this->Livingentity::getHealth();
 }
 
 void Player::takeDamage(int damage)
-{
-	this->health -= damage;
+{;
+	setHealth(getHealth() - damage);
 }
 
 void Player::accelerate(float dt)
 {
-	velocity += shipForwardRotation() * acceleration * dt;
+	setVelocity(getVelocity() + shipForwardRotation() * acceleration * dt);
 }
 
 void Player::maxVelocity()
 {
+	sf::Vector2f velocity = getVelocity();
+	
 	float speed = std::sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
 	
 	if (speed > maxSpeed)
-	velocity = (velocity / speed) * maxSpeed;
+		setVelocity((velocity / speed) * maxSpeed);
+
 }
 
 float Player::playerRadius()
@@ -134,10 +139,10 @@ float Player::playerRadius()
 
 void Player::reset(const sf::Vector2f& spawnPosition)
 {
-	health = INITHEALTH;
-	alive = true;
-	position = spawnPosition;
-	velocity = { 0.f, 0.f };
-	ship.setPosition(position);
+	setHealth(INITHEALTH);
+	setAlive(true);
+	setPosition(spawnPosition);
+	setVelocity({ 0.f, 0.f });
+	ship.setPosition(getPosition());
 	ship.setRotation(sf::degrees(0.f));
 }

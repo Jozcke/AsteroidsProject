@@ -6,7 +6,7 @@ Asteroid::Asteroid() : Livingentity()
 {
 	randomSize();
 	setRadius();
-	setSpeed();
+	setAsteroidSpeed();
 	setRandomDirection();
 	setHexagonShape();
 	
@@ -14,9 +14,9 @@ Asteroid::Asteroid() : Livingentity()
 	hexagon.setOutlineColor(sf::Color::White);
 	hexagon.setOutlineThickness(1.f);
 
-	velocity = getSpeed() * getDirection();
-	alive = true;
-	health = 1;
+	this->setVelocity(getSpeed() * getDirection());
+	this->setAlive(true);
+	this->setHealth(1);
 
 }
 
@@ -53,13 +53,13 @@ void Asteroid::setHexagonShape()
 	}
 }
 
-void Asteroid::setSpeed()
+void Asteroid::setAsteroidSpeed()
 {
 	switch (size)
 	{
-		case 1: this->speed = 200.f; break;
-		case 2: this->speed = 100.f; break;
-		case 3: this->speed = 50.f; break;
+		case 1: this->setSpeed(200.f); break;
+		case 2: this->setSpeed(100.f); break;
+		case 3: this->setSpeed(50.f); break;
 	}
 }
 
@@ -70,14 +70,9 @@ void Asteroid::draw(sf::RenderWindow& window)
 
 void Asteroid::update(float dt, const sf::RenderWindow& window)
 {
-	position += velocity * dt;
+	this->move(dt);
 	Entity::wrapAroundScreen(window);
-	hexagon.setPosition(position);
-}
-
-float Asteroid::getSpeed() const
-{
-	return this->speed;
+	hexagon.setPosition(getPosition());
 }
 
 void Asteroid::setRandomDirection()
@@ -94,4 +89,14 @@ sf::Vector2f Asteroid::getDirection() const
 float Asteroid::getRadius() const
 {
 	return this->radius;
+}
+
+bool Asteroid::isAlive() const
+{
+	return this->Entity::isAlive();
+}
+
+void Asteroid::setAlive(bool alive)
+{
+	this->Entity::setAlive(alive);
 }

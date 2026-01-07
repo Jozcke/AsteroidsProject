@@ -15,8 +15,10 @@ private:
 public:
 	Bullet(const sf::Vector2f& startPosition, const sf::Vector2f& direction);
 	~Bullet();
+	
 	void update(float dt, const sf::RenderWindow& window) override;
 	void draw(sf::RenderWindow& window) override;
-	float getRadius() const;
-	sf::Vector2f getPosition() const;
+	
+	float getRadius() const override;
+
 };

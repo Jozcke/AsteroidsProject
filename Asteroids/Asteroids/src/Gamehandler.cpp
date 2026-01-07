@@ -56,16 +56,16 @@ Gamehandler::Gamehandler()
 	overlay.setSize(sf::Vector2f(window.getWindow().getSize()));
 	overlay.setFillColor(sf::Color(0, 0, 0, 150));
 	
-	v_asteroid.reserve(10);
-	v_bullets.reserve(10);
+	v_entity.reserve(30);
+
 
 }
 
 Gamehandler::~Gamehandler()
 {
-	for (Asteroid* asteroid : v_asteroid)
+	for (Entity* entity : v_entity)
 	{
-		delete asteroid;
+		delete entity;
 	}
 }
 
@@ -182,24 +182,18 @@ void Gamehandler::updateGame(float dt)
 	
 	player.update(dt, window.getWindow());
 
-	for (auto& asteroid : v_asteroid)
+	for (Entity* object : v_entity)
 	{
-		asteroid->update(dt, window.getWindow());
-	}
-	
-	for (auto& bullet : v_bullets)
-	{
-		bullet.update(dt, window.getWindow());
+		object->update(dt, window.getWindow());
 	}
 	
 	bulletAsteroidCollision();
 	AsteroidPlayerCollision();
 	AsteroidAsteroidCollision();
 	
-	deleteBullet();
-	deleteAsteroid();
+	deleteDeadEntity();
 	
-	if (v_asteroid.empty())
+	if (v_entity.empty())
 	{
 		waveActive = false;
 	}
@@ -218,11 +212,8 @@ void Gamehandler::drawEntity()
 	//draw entities
 	player.draw(window.getWindow());
 	
-	for (auto& bullet : v_bullets)
-		bullet.draw(window.getWindow());
-
-	for (auto& asteroid : v_asteroid)
-		asteroid->draw(window.getWindow());
+	for (Entity* object : v_entity)
+		object->draw(window.getWindow());
 	
 	window.getWindow().draw(healthText);
 	window.getWindow().draw(scoreText);
@@ -270,25 +261,15 @@ void Gamehandler::playerShooting(float dt)
 	if (player.Shoot() && fireCooldown <= 0.f)
 	{
 		sf::Vector2f direction = player.shipForwardRotation();
-		v_bullets.emplace_back(player.getPosition() + direction * 12.f, direction);
+		v_entity.emplace_back(new Bullet(player.getPosition() + direction * player.getRadius(), direction));
 		fireCooldown = fireRate;
 		std::cout << "Create bullet" << std::endl;
 	}
 }
 
-void Gamehandler::deleteBullet()
-{
-	v_bullets.erase(std::remove_if(v_bullets.begin(), v_bullets.end(),
-			[](const Bullet& b) {
-				if (!b.isAlive())
-				{
-					std::cout << "Bullet deleted" << std::endl;
-					return true;
-				}
-				return false;
-			}), v_bullets.end());
-}
 
+//could refactor the spawn function -> one function for spawn and spawn when empty.
+//call the function in both functions -> only write it once. 
 void Gamehandler::spawnAsteroid(float dt)
 {
 	spawnCooldown -= dt;
@@ -297,11 +278,11 @@ void Gamehandler::spawnAsteroid(float dt)
 	{
 		Asteroid* asteroid = new Asteroid();
 		sf::Vector2f spawnPos = randomEdgeSpawn(asteroid->getRadius());
-		asteroid->setPosition({ spawnPos.x, spawnPos.y });
+		asteroid->setPosition({ spawnPos });
 
-		if (validSpawnPosition({spawnPos.x, spawnPos.y}, asteroid->getRadius()))
+		if (validSpawnPosition({spawnPos}, asteroid->getRadius()))
 		{
-			v_asteroid.push_back(asteroid);
+			v_entity.push_back(asteroid);
 		}
 		else
 		{
@@ -316,19 +297,19 @@ void Gamehandler::spawnAsteroid(float dt)
 void Gamehandler::spawnAsteroidsWhenEmpty(float dt)
 {
 	
-	if (v_asteroid.empty() && waveActive != true)
+	if (v_entity.empty() && waveActive != true)
 	{
 		int size = rand() % 8 + 3;
 		for (size_t i = 0; i < size; i++)
 		{
-			Asteroid* asteroid = new Asteroid();
+			Entity* asteroid = new Asteroid();
 
 			sf::Vector2f spawnPos = randomEdgeSpawn(asteroid->getRadius());
-			asteroid->setPosition({ spawnPos.x, spawnPos.y });
+			asteroid->setPosition({ spawnPos });
 
-			if (validSpawnPosition({ spawnPos.x, spawnPos.y }, asteroid->getRadius()))
+			if (validSpawnPosition({ spawnPos }, asteroid->getRadius()))
 			{
-				v_asteroid.push_back(asteroid);
+				v_entity.push_back(asteroid);
 			}
 			else
 			{
@@ -340,34 +321,69 @@ void Gamehandler::spawnAsteroidsWhenEmpty(float dt)
 	}
 }
 
-void Gamehandler::deleteAsteroid()
+//void Gamehandler::deleteAsteroid()
+//{
+//	v_entity.erase(std::remove_if(v_entity.begin(), v_entity.end(),
+//			[](const Asteroid* a) { 
+//				if (!a->isAlive())
+//				{
+//					delete a;
+//					std::cout << "Asteroid destroyed" << std::endl;
+//					return true;
+//				}
+//				return false;
+//			}), v_entity.end());
+//}
+
+//void Gamehandler::deleteBullet()
+//{
+//	v_entity.erase(std::remove_if(v_entity.begin(), v_entity.end(),
+//			[](const Bullet& b) {
+//				if (!b.isAlive())
+//				{
+//					std::cout << "Bullet deleted" << std::endl;
+//					return true;
+//				}
+//				return false;
+//			}), v_entity.end());
+//}
+
+void Gamehandler::deleteDeadEntity()
 {
-	v_asteroid.erase(std::remove_if(v_asteroid.begin(), v_asteroid.end(),
-			[](const Asteroid* a) { 
-				if (!a->isAlive())
-				{
-					delete a;
-					std::cout << "Asteroid destroyed" << std::endl;
-					return true;
-				}
-				return false;
-			}), v_asteroid.end());
+	v_entity.erase(std::remove_if(v_entity.begin(), v_entity.end(),
+		[](Entity* object)
+		{
+			if (!object->isAlive())
+			{
+				delete object;
+				std::cout << "object destroyed" << std::endl;
+				return true;
+			}
+			return false;
+		}),
+		v_entity.end());
 }
 
 void Gamehandler::bulletAsteroidCollision()
 {
-	for (auto& bullet : v_bullets)
+	for (Entity* objectA : v_entity)
 	{
-		for (auto* asteroid : v_asteroid)
+		Bullet* bullet = dynamic_cast<Bullet*>(objectA);
+		if (!bullet || !bullet->isAlive()) { continue; }
+
+		for (Entity* objectB : v_entity)
 		{
-			if (!asteroid->isAlive()) {continue;}
-			if (Collisionmanager::circleCollision(bullet.getPosition(), bullet.getRadius(),
+			Asteroid* asteroid = dynamic_cast<Asteroid*>(objectB);
+			if (!asteroid || !asteroid->isAlive()) { continue; }
+
+			if (Collisionmanager::circleCollision(
+				bullet->getPosition(), bullet->getRadius(),
 				asteroid->getPosition(), asteroid->getRadius()))
 			{
-				bullet.setAlive(false);
+				bullet->setAlive(false);
 				asteroid->setAlive(false);
 				addScore();
-				break;  //fail-safe break incase bullet might register more than 1 collision. 
+				return;
 			}
 		}
 	}
@@ -377,9 +393,13 @@ void Gamehandler::AsteroidPlayerCollision()
 {
 	if (!player.isAlive()) {return;}
 	
-	for (auto* asteroid : v_asteroid)
+	for (Entity* objectA : v_entity)
 	{
-		if (Collisionmanager::circleCollision(player.getPosition(), player.getRadius(),
+		Asteroid* asteroid = dynamic_cast<Asteroid*>(objectA);
+		if (!asteroid || !asteroid->isAlive()) { continue; }
+		
+		if (Collisionmanager::circleCollision(
+			player.getPosition(), player.getRadius(),
 			asteroid->getPosition(), asteroid->getRadius()))
 		{
 				player.takeDamage(1);
@@ -393,14 +413,22 @@ void Gamehandler::AsteroidPlayerCollision()
 
 void Gamehandler::AsteroidAsteroidCollision()
 {
-	for (size_t i = 0; i < v_asteroid.size(); i++)
+	for (size_t i = 0; i < v_entity.size(); i++)
 	{
-		for (size_t j = i + 1; j < v_asteroid.size(); j++)
+		Asteroid* asteroidA = dynamic_cast<Asteroid*>(v_entity[i]);
+		if (!asteroidA || !asteroidA->isAlive()) { continue; }
+		
+		for (size_t j = i+1; j < v_entity.size(); j++)
 		{
-			if (Collisionmanager::circleCollision(v_asteroid[i]->getPosition(), v_asteroid[i]->getRadius(),
-				v_asteroid[j]->getPosition(), v_asteroid[j]->getRadius()))
+			Asteroid* asteroidB = dynamic_cast<Asteroid*>(v_entity[j]);
+			if (!asteroidB || !asteroidB->isAlive()) { continue; }
+		
+
+			if (Collisionmanager::circleCollision(
+				asteroidA->getPosition(), asteroidA->getRadius(),
+				asteroidB->getPosition(), asteroidB->getRadius()))
 			{
-				Collisionmanager::onCollisionVelocitySwap(*v_asteroid[i], *v_asteroid[j]);
+				Collisionmanager::onCollisionVelocitySwap(*asteroidA, *asteroidB);
 			}
 		}
 	}
@@ -450,14 +478,16 @@ sf::Vector2f Gamehandler::randomEdgeSpawn(float radius)
 
 bool Gamehandler::validSpawnPosition(const sf::Vector2f& pos,float radius)
 {
-	if (Collisionmanager::circleCollision(pos, radius, player.getPosition(), player.getRadius() + 50.f))
+	if (Collisionmanager::circleCollision(pos, radius, 
+		player.getPosition(), player.getRadius() + 100.f))
 	{
 		return false;
 	}
 
-	for (const auto& asteroid : v_asteroid)
+	for (const auto& asteroid : v_entity)
 	{
-		if (Collisionmanager::circleCollision(pos, radius,asteroid->getPosition(), asteroid->getRadius()))
+		if (Collisionmanager::circleCollision(pos, radius,
+			asteroid->getPosition(), asteroid->getRadius()))
 		{
 			return false;
 		}
@@ -473,13 +503,13 @@ void Gamehandler::gameReset()
 
 	player.reset(windowCenter);
 
-	for (Asteroid* asteroid : v_asteroid)
+	for (Entity* asteroid : v_entity)
 	{
 		delete asteroid;
 	}
 	
-	v_asteroid.clear();
-	v_bullets.clear();
+	v_entity.clear();
+
 
 	score = 0;
 	spawnCooldown = 0.f;

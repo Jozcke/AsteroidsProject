@@ -4,15 +4,23 @@
 
 class Livingentity : public Entity
 {
-protected:
-	sf::Vector2f velocity;
-	float speed = 0.f;
-	int health;
+private:
+	sf::Vector2f velocity = { 0.f, 0.f };
+	float speed = 0;
+	int health = 1;
 
 public:
 	virtual ~Livingentity() = default;
-	void setPosition(const sf::Vector2f& pos) { position = pos; }
+
 	sf::Vector2f getVelocity() const;
 	void setVelocity(sf::Vector2f velocity);
+
+	void setSpeed(float speed);
+	float getSpeed() const;
+
+	void setHealth(int health);
+	int getHealth() const;
+
+	void move(float dt);
 };
 

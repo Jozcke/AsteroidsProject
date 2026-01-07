@@ -26,8 +26,7 @@ private:
 	GameState gameState;
 	Scoremanager scoreManager;
 	
-	std::vector<Bullet> v_bullets;
-	std::vector<Asteroid*> v_asteroid;
+	std::vector<Entity*> v_entity;  //vector for bullets & asteroids
 	
 	float fireCooldown = 0.f;
 	const float fireRate = 0.25f;
@@ -57,13 +56,16 @@ public:
 	void updatePause(float dt);
 
 	void playerShooting(float dt);
-	void deleteBullet();
 
 	void spawnAsteroid(float dt);
 	void spawnAsteroidsWhenEmpty(float dt);
 	sf::Vector2f randomEdgeSpawn(float radius);
 	bool validSpawnPosition(const sf::Vector2f& pos, float radius);
-	void deleteAsteroid();
+	
+	//void deleteAsteroid();
+	//void deleteBullet();
+	
+	void deleteDeadEntity();
 
 	void bulletAsteroidCollision();
 	void AsteroidPlayerCollision();
