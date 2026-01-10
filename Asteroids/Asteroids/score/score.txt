@@ -3,8 +3,8 @@ sad 90
 test 80
 Joakim 60
 joakim 60
+joakim 60
+joakim 50
 bob 30
+Joakim 30
 Joakiom 20
-Joakim 10
-Joakim 10
-Joakim 10

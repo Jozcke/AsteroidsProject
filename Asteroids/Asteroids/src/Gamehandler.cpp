@@ -11,7 +11,8 @@
 #include <string>
 
 Gamehandler::Gamehandler()
-	: window(), healthText(gameFont), scoreText(gameFont), pauseText(gameFont), gameOverText(gameFont), nameInputText(gameFont), scoreManager(gameFont), gameState(GameState::Paused)
+	: window(), healthText(gameFont), scoreText(gameFont), pauseText(gameFont),
+	gameOverText(gameFont), nameInputText(gameFont), scoreManager(gameFont), MenuAsteroidText(gameFont), pressToStartText(gameFont), gameState(GameState::MainMenu)
 {
 	if (!gameFont.openFromFile("font/ARCADECLASSIC.TTF")) {
 		std::cerr << "Failed to load font!" << std::endl;
@@ -35,7 +36,7 @@ Gamehandler::Gamehandler()
 	pauseText.setFillColor(sf::Color::Yellow);
 	pauseText.setString("PAUSED");
 	sf::FloatRect pauseTextBounds = pauseText.getLocalBounds();
-	pauseText.setOrigin({ pauseTextBounds.size.x / 2.f, pauseTextBounds.size.y / 2.f});
+	pauseText.setOrigin({ pauseTextBounds.size.x / 2.f, pauseTextBounds.size.y / 2.f });
 	pauseText.setPosition({ static_cast<float>(window.getSize().x / 2.f),
 						static_cast<float>(window.getSize().y - 100) });
 
@@ -55,8 +56,22 @@ Gamehandler::Gamehandler()
 	sf::RectangleShape overlay;
 	overlay.setSize(sf::Vector2f(window.getWindow().getSize()));
 	overlay.setFillColor(sf::Color(0, 0, 0, 150));
-	
+
 	v_entity.reserve(30);
+
+	MenuAsteroidText.setFont(gameFont);
+	MenuAsteroidText.setString("ASTEROIDS");
+	MenuAsteroidText.setCharacterSize(64);
+	MenuAsteroidText.setFillColor(sf::Color::White);
+	MenuAsteroidText.setOrigin(MenuAsteroidText.getLocalBounds().getCenter());
+	MenuAsteroidText.setPosition({window.getSize().x / 2.f, window.getSize().y / 2.f - 80.f});
+
+	pressToStartText.setFont(gameFont);
+	pressToStartText.setString("Press    ENTER    to    start");
+	pressToStartText.setCharacterSize(28);
+	pressToStartText.setFillColor(sf::Color::White);
+	pressToStartText.setOrigin(pressToStartText.getLocalBounds().getCenter());
+	pressToStartText.setPosition({ window.getSize().x / 2.f, window.getSize().y / 2.f + 20.f });
 
 
 }
@@ -84,7 +99,7 @@ void Gamehandler::runGame()
 
 			if (const auto keyPressed = event->getIf < sf::Event::KeyPressed>())
 			{
-				if (keyPressed->scancode == sf::Keyboard::Scancode::P && gameState != GameState::GameOver)
+				if (keyPressed->scancode == sf::Keyboard::Scancode::P && gameState != GameState::GameOver && gameState != GameState::MainMenu)
 				{
 					if (gameState == GameState::Paused)
 					{
@@ -97,7 +112,15 @@ void Gamehandler::runGame()
 						std::cout << "Pause game" << std::endl;
 					}
 				}
+				if (gameState == GameState::MainMenu &&
+					keyPressed->scancode == sf::Keyboard::Scancode::Enter)
+				{
+					gameReset();
+					gameState = GameState::Playing;
+				}
 			}
+			
+			
 			if (gameState == GameState::GameOver && enterNameCheck)
 			{
 				if (const auto* charInput = event->getIf<sf::Event::TextEntered>())
@@ -113,7 +136,7 @@ void Gamehandler::runGame()
 
 						gameReset();
 						enterNameCheck = false;
-						gameState = GameState::Paused;
+						gameState = GameState::MainMenu;
 						isGameOver = false;
 					}
 					else if (charInput->unicode < 128)
@@ -138,6 +161,9 @@ void Gamehandler::runGame()
 		//updates position
 		switch (gameState)
 		{
+		case Gamehandler::GameState::MainMenu:
+			break;
+
 		case Gamehandler::GameState::Playing:
 			updateGame(dt);
 			playerShooting(dt);
@@ -166,7 +192,7 @@ void Gamehandler::runGame()
 			else
 			{
 				gameReset();
-				gameState = GameState::Paused;
+				gameState = GameState::MainMenu;
 				isGameOver = false;
 			}
 		}
@@ -209,47 +235,70 @@ void Gamehandler::updatePause(float dt)
 void Gamehandler::drawEntity()
 {
 	window.clear(); // clear screen before drawing next frame
-	//draw entities
-	player.draw(window.getWindow());
 	
-	for (Entity* object : v_entity)
-		object->draw(window.getWindow());
-	
-	window.getWindow().draw(healthText);
-	window.getWindow().draw(scoreText);
-	
-	
-	if (gameState == GameState::Paused)
+	switch (gameState)
 	{
-		
+
+	case Gamehandler::GameState::Playing:
+	{
+		player.draw(window.getWindow());
+
+		for (Entity* object : v_entity)
+			object->draw(window.getWindow());
+
+		window.getWindow().draw(healthText);
+		window.getWindow().draw(scoreText);
+		break;
+	}
+
+	case Gamehandler::GameState::GameOver:
+	{
+	window.getWindow().draw(gameOverText);
+	scoreManager.draw(window.getWindow());
+
+	if (enterNameCheck)
+	{
+		nameInputText.setString("Name " + playerName + "_"); // underscore cursor
+		// Center it horizontally
+		sf::FloatRect bounds = nameInputText.getLocalBounds();
+		nameInputText.setOrigin({ bounds.size.x / 2.f, bounds.size.y / 2.f });
+		nameInputText.setPosition({ window.getWindow().getSize().x / 2.f,
+			window.getWindow().getSize().y - 150.f });
+		window.getWindow().draw(nameInputText);
+	}
+	break;
+	}
+	
+	case Gamehandler::GameState::Paused:
+	{
 		sf::RectangleShape overlay;
 		overlay.setSize(sf::Vector2f(window.getWindow().getSize()));
 		overlay.setFillColor(sf::Color(0, 0, 0, 150)); // semi-transparent black
-		window.getWindow().draw(overlay);
+
 
 		window.getWindow().draw(pauseText);
 		scoreManager.draw(window.getWindow());
-		
+
+		player.draw(window.getWindow());
+
+		for (Entity* object : v_entity)
+			object->draw(window.getWindow());
+
+		window.getWindow().draw(healthText);
+		window.getWindow().draw(scoreText);
+
+		window.getWindow().draw(overlay);
+		break;
+	}
+	
+	case Gamehandler::GameState::MainMenu:
+	{
+		window.getWindow().draw(MenuAsteroidText);
+		window.getWindow().draw(pressToStartText);
+		break;
+	}
 	}
 
-	if (gameState == GameState::GameOver)
-	{
-		window.getWindow().draw(gameOverText);
-		scoreManager.draw(window.getWindow());
-		if (enterNameCheck)
-		{
-			nameInputText.setString("Name " + playerName + "_"); // underscore cursor
-			// Center it horizontally
-			sf::FloatRect bounds = nameInputText.getLocalBounds();
-			nameInputText.setOrigin({ bounds.size.x / 2.f, bounds.size.y / 2.f });
-			nameInputText.setPosition({ window.getWindow().getSize().x / 2.f,
-				window.getWindow().getSize().y - 150.f });
-			window.getWindow().draw(nameInputText);
-		}
-	}
-	
-	
-	
 	//display drawn entities. 
 	window.display();
 }
@@ -479,12 +528,15 @@ void Gamehandler::gameReset()
 	{
 		delete asteroid;
 	}
-	
-	v_entity.clear();
 
+	v_entity.clear();
 
 	score = 0;
 	spawnCooldown = 0.f;
 	fireCooldown = 0.f;
 	waveActive = false;
+
+	isGameOver = false;
+	enterNameCheck = false;
+	playerName.clear();
 }

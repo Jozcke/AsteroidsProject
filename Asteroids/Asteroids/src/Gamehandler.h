@@ -17,7 +17,9 @@ private:
 		Playing,
 		GameOver,
 		Paused,
+		MainMenu,
 	};
+	
 	sf::Font gameFont;
 	
 	Renderwindow window;
@@ -41,6 +43,8 @@ private:
 	sf::Text pauseText;
 	sf::Text gameOverText;
 	sf::Text nameInputText;
+	sf::Text MenuAsteroidText;
+	sf::Text pressToStartText;
 
 	std::string playerName;
 	bool enterNameCheck = false;
