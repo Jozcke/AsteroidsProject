@@ -57,7 +57,6 @@ public:
 	void runGame();
 	void drawEntity();
 	void updateGame(float dt);
-	void updatePause(float dt);
 
 	void playerShooting(float dt);
 

@@ -227,11 +227,6 @@ void Gamehandler::updateGame(float dt)
 
 }
 
-void Gamehandler::updatePause(float dt)
-{
-
-}
-
 void Gamehandler::drawEntity()
 {
 	window.clear(); // clear screen before drawing next frame
