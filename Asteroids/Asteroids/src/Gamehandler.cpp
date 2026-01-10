@@ -321,33 +321,6 @@ void Gamehandler::spawnAsteroidsWhenEmpty(float dt)
 	}
 }
 
-//void Gamehandler::deleteAsteroid()
-//{
-//	v_entity.erase(std::remove_if(v_entity.begin(), v_entity.end(),
-//			[](const Asteroid* a) { 
-//				if (!a->isAlive())
-//				{
-//					delete a;
-//					std::cout << "Asteroid destroyed" << std::endl;
-//					return true;
-//				}
-//				return false;
-//			}), v_entity.end());
-//}
-
-//void Gamehandler::deleteBullet()
-//{
-//	v_entity.erase(std::remove_if(v_entity.begin(), v_entity.end(),
-//			[](const Bullet& b) {
-//				if (!b.isAlive())
-//				{
-//					std::cout << "Bullet deleted" << std::endl;
-//					return true;
-//				}
-//				return false;
-//			}), v_entity.end());
-//}
-
 void Gamehandler::deleteDeadEntity()
 {
 	v_entity.erase(std::remove_if(v_entity.begin(), v_entity.end(),
@@ -403,7 +376,6 @@ void Gamehandler::AsteroidPlayerCollision()
 			asteroid->getPosition(), asteroid->getRadius()))
 		{
 				player.takeDamage(1);
-				//if (player.getHealth() <= 0) { player.setAlive(false); }
 				std::cout << "player hit by asteroid" << std::endl;
 				asteroid->setAlive(false);
 				break;
@@ -450,7 +422,7 @@ sf::Vector2f Gamehandler::randomEdgeSpawn(float radius)
 
 	float x, y;
 
-	switch (rand() % 4) // rand 4 edges. 
+	switch (rand() % 4) // rand edges. 
 	{
 	case 0: // Top
 		x = static_cast<float>(rand() % size.x);

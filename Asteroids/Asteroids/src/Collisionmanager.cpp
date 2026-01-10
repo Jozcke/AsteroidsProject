@@ -16,9 +16,6 @@ bool Collisionmanager::circleCollision(const sf::Vector2f& aPos, float aRadius, 
 
 void Collisionmanager::onCollisionVelocitySwap(Asteroid& a, Asteroid& b)
 {
-	/*sf::Vector2f temp = a.getVelocity();
-	a.setVelocity(b.getVelocity());
-	b.setVelocity(temp);*/
 	a.setVelocity(a.getVelocity() * -1.f);
 	b.setVelocity(b.getVelocity() * -1.f);
 }

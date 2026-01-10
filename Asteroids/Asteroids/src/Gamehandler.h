@@ -62,9 +62,6 @@ public:
 	sf::Vector2f randomEdgeSpawn(float radius);
 	bool validSpawnPosition(const sf::Vector2f& pos, float radius);
 	
-	//void deleteAsteroid();
-	//void deleteBullet();
-	
 	void deleteDeadEntity();
 
 	void bulletAsteroidCollision();
