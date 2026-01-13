@@ -400,7 +400,7 @@ void Gamehandler::bulletAsteroidCollision()
 				bullet->setAlive(false);
 				asteroid->setAlive(false);
 				addScore();
-				return;
+				break;
 			}
 		}
 	}
