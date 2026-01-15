@@ -34,3 +34,13 @@ void Entity::wrapAroundScreen(const sf::RenderWindow& window)
     else if (position.y > size.y + getRadius())
         position.y = -getRadius();
 }
+
+sf::Vector2f Entity::getVelocity() const
+{
+    return this->velocity;
+}
+
+void Entity::setVelocity(sf::Vector2f swapVelocity)
+{
+    this->velocity = swapVelocity;
+}

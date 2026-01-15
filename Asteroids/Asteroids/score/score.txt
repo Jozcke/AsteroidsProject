@@ -1,10 +1,10 @@
 testtest 190
 bob 120
 sad 90
+joakim 90
 test 80
+joakim 80
 Joakim 60
 joakim 60
 joakim 60
-joakim 50
-bob 30
-Joakim 30
+Joakim 60
