@@ -10,7 +10,7 @@ Bullet::Bullet(const sf::Vector2f& startPosition, const sf::Vector2f& direction)
 	shapeBullet.setOrigin({ 2.f,2.f });
 	
 	setPosition(startPosition);
-	velocity = direction * BULLETSPEED;
+	setVelocity(direction * BULLETSPEED);
 	setAlive(true);
 	
 	shapeBullet.setPosition(getPosition());
@@ -23,7 +23,7 @@ Bullet::~Bullet()
 void Bullet::update(float dt, const sf::RenderWindow& window)
 {
 	
-	setPosition(getPosition() + velocity * dt);  //<-- mathematical update of position.
+	setPosition(getPosition() + getVelocity() * dt);  //<-- mathematical update of position.
 	
 	shapeBullet.setPosition(getPosition()); //<--- render logic for SFML.
 

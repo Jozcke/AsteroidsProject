@@ -11,8 +11,6 @@ private:
 public:
 	virtual ~Livingentity() = default;
 
-	
-
 	void setSpeed(float speed);
 	float getSpeed() const;
 

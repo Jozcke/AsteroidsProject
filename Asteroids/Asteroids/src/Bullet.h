@@ -9,7 +9,6 @@ class Bullet : public Entity
 {
 private:
 	sf::CircleShape shapeBullet;
-	sf::Vector2f velocity;
 	static constexpr float BULLETSPEED = 400.f;
 
 public:
